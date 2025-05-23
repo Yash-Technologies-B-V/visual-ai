@@ -10,11 +10,12 @@ app.use(express.json());
 
 const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY;
 const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT;
+const AZURE_OPENAI_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT;
 
 app.post('/api/chat', async (req, res) => {
   try {
     const response = await axios.post(
-      `${AZURE_OPENAI_ENDPOINT}/openai/deployments/YOUR_DEPLOYMENT_NAME/chat/completions?api-version=2023-03-15-preview`,
+      `${AZURE_OPENAI_ENDPOINT}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2023-03-15-preview`,
       req.body,
       {
         headers: {
