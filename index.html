@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,170 +8,111 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f9;
         }
-        .container {
-            width: 90%;
-            max-width: 600px;
+        header {
             text-align: center;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .header {
             margin-bottom: 20px;
         }
-        .header img {
-            width: 50px;
-            height: 50px;
-        }
-        .header h1 {
-            margin: 10px 0;
-        }
-        .header p {
-            color: #666;
-        }
-        .slider-container {
-            margin: 20px 0;
-        }
-        .slider-container small {
-            display: block;
-            margin-top: 10px;
-            color: #666;
-        }
-        .prompt-container {
-            margin: 20px 0;
-        }
-        .prompt-container textarea {
-            width: 100%;
+        header img {
+            width: 100px;
             height: 100px;
+        }
+        header h1 {
+            margin: 10px 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .container input, .container button {
+            width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            margin: 10px 0;
+            font-size: 1em;
         }
-        .prompt-container button {
-            padding: 10px 20px;
-            border: none;
-            background: #007bff;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .prompt-container button:hover {
-            background: #0056b3;
-        }
-        .prompt-suggestions {
+        .container .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin: 20px 0;
         }
-        .prompt-suggestions div {
-            margin-bottom: 10px;
+        .container .slider-container input {
+            width: 70%;
+            margin: 0 10px;
         }
-        .prompt-suggestions button {
-            margin-left: 10px;
-            padding: 5px 10px;
-            border: none;
-            background: #28a745;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
+        .container .slider-container label {
+            width: 15%;
+            text-align: center;
         }
-        .prompt-suggestions button:hover {
-            background: #218838;
-        }
-        .ai-response {
+        .prompts {
             margin-top: 20px;
-            padding: 10px;
-            background: #e9ecef;
-            border-radius: 4px;
         }
-        @media (max-width: 480px) {
-            .prompt-container textarea {
-                height: 80px;
-            }
-            .prompt-container button {
-                width: 100%;
-            }
+        .prompts p {
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
+    <header>
+        <img src="logo_dark.png" alt="Visual AI Logo">
+        <h1>Visual AI</h1>
+        <p>Craft smarter prompts, faster.</p>
+    </header>
     <div class="container">
-        <div class="header">
-            <img src="logo_dark.png" alt="Logo">
-            <h1>Visual AI</h1>
-            <p>Craft smarter prompts, faster.</p>
-        </div>
+        <input type="text" id="question" placeholder="Type your question here...">
         <div class="slider-container">
-            <label for="alignment">Alignment</label>
-            <input type="range" id="alignment" name="alignment" min="0" max="100" value="50">
-            <small id="alignment-preview">Tone: Balanced</small>
+            <label for="alignment">Creative</label>
+            <input type="range" id="alignment" min="0" max="100" value="50">
+            <label for="alignment">Literal</label>
         </div>
-        <div class="prompt-container">
-            <textarea id="user-input" placeholder="Enter your topic or question here..."></textarea>
-            <button onclick="generatePrompts()">Generate Prompts</button>
-        </div>
-        <div class="prompt-suggestions" id="prompt-suggestions"></div>
-        <div class="ai-response" id="ai-response"></div>
+        <button onclick="generatePrompts()">Generate Prompts</button>
+        <div class="prompts" id="prompts"></div>
     </div>
     <script>
-        document.getElementById('alignment').addEventListener('input', function() {
-            const val = this.value;
-            const preview = document.getElementById('alignment-preview');
-            if (val < 30) preview.textContent = "Tone: Simple";
-            else if (val < 70) preview.textContent = "Tone: Balanced";
-            else preview.textContent = "Tone: Creative";
-        });
-
         function generatePrompts() {
-            const userInput = document.getElementById('user-input').value;
+            const question = document.getElementById('question').value;
             const alignment = document.getElementById('alignment').value;
-            let prompts = [];
+            const promptsContainer = document.getElementById('prompts');
+            promptsContainer.innerHTML = '';
 
-            if (alignment < 30) {
-                prompts = [`Explain ${userInput} in simple terms`, `What is ${userInput}?`];
-            } else if (alignment < 70) {
-                prompts = [`Compare and contrast ${userInput}`, `How does ${userInput} work?`];
+            let prompts = [];
+            if (alignment < 34) {
+                prompts.push(`Invent a story where ${question}`);
+                prompts.push(`What if ${question}`);
+            } else if (alignment < 67) {
+                prompts.push(`Explain how ${question}`);
+                prompts.push(`Compare ${question} with another topic`);
             } else {
-                prompts = [`Imagine a world where ${userInput}`, `What if ${userInput} didn't exist?`];
+                prompts.push(`Describe step-by-step ${question}`);
+                prompts.push(`Define ${question}`);
             }
 
-            const suggestionsContainer = document.getElementById('prompt-suggestions');
-            suggestionsContainer.innerHTML = '';
             prompts.forEach(prompt => {
-                const div = document.createElement('div');
-                div.textContent = prompt;
-                const button = document.createElement('button');
-                button.textContent = 'Use this';
-                button.onclick = () => getAIResponse(prompt);
-                div.appendChild(button);
-                suggestionsContainer.appendChild(div);
+                const p = document.createElement('p');
+                p.textContent = prompt;
+                promptsContainer.appendChild(p);
             });
-        }
-
-        async function getAIResponse(prompt) {
-            const responseBox = document.getElementById('ai-response');
-            responseBox.innerHTML = "Thinking...";
-            const res = await fetch('https://your-api-endpoint', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer YOUR_API_KEY'
-                },
-                body: JSON.stringify({
-                    prompt: prompt,
-                    max_tokens: 200
-                })
-            });
-            const data = await res.json();
-            responseBox.innerHTML = `<strong>AI Response:</strong><p>${data.choices[0].text}</p>`;
         }
     </script>
 </body>
