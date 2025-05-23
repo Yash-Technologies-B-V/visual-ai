@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
@@ -7,6 +6,9 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// ✅ Serve static files from the public folder
+app.use(express.static('public'));
 
 const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY;
 const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT;
