@@ -42,24 +42,23 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
-        .container input, .container button {
+        .container input, .container button, .container textarea {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             font-size: 1em;
+            box-sizing: border-box;
         }
         .container .slider-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 20px 0;
         }
         .container .slider-container input {
-            width: 70%;
-            margin: 0 10px;
+            width: 80%;
         }
         .container .slider-container label {
-            width: 15%;
+            width: 10%;
             text-align: center;
         }
         .prompts {
@@ -70,6 +69,20 @@
             padding: 10px;
             border-radius: 4px;
             margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .prompts button {
+            padding: 5px 10px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .prompts button:hover {
+            background: #0056b3;
         }
     </style>
 </head>
@@ -111,8 +124,30 @@
             prompts.forEach(prompt => {
                 const p = document.createElement('p');
                 p.textContent = prompt;
+                const button = document.createElement('button');
+                button.textContent = 'Use this';
+                button.onclick = () => getAIResponse(prompt);
+                p.appendChild(button);
                 promptsContainer.appendChild(p);
             });
+        }
+
+        async function getAIResponse(prompt) {
+            const responseBox = document.getElementById('ai-response');
+            responseBox.innerHTML = "Thinking...";
+            const res = await fetch('https://your-api-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer YOUR_API_KEY'
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    max_tokens: 200
+                })
+            });
+            const data = await res.json();
+            responseBox.innerHTML = `<strong>AI Response:</strong><p>${data.choices[0].text}</p>`;
         }
     </script>
 </body>
