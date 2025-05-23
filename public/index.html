@@ -108,54 +108,54 @@
         <div class="prompts" id="prompts"></div>
         <div id="ai-response"></div>
     </div>
-    <script>
-        function generatePrompts() {
-            const question = document.getElementById('question').value;
-            const alignment = document.getElementById('alignment').value;
-            const promptsContainer = document.getElementById('prompts');
-            promptsContainer.innerHTML = '';
+   <script>
+    async function generatePrompts() {
+        const question = document.getElementById('question').value;
+        const alignment = document.getElementById('alignment').value;
+        const promptsContainer = document.getElementById('prompts');
+        promptsContainer.innerHTML = '';
 
-            let prompts = [];
-            if (alignment < 34) {
-                prompts.push(`Invent a story where ${question}`);
-                prompts.push(`What if ${question}`);
-            } else if (alignment < 67) {
-                prompts.push(`Explain how ${question}`);
-                prompts.push(`Compare ${question} with another topic`);
-            } else {
-                prompts.push(`Describe step-by-step ${question}`);
-                prompts.push(`Define ${question}`);
-            }
+        const res = await fetch('https://visualai-hmg0hmaghrd6abgy.westeurope-01.azurewebsites.net/api/generate-prompts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ question, alignment })
+        });
 
-            prompts.forEach(prompt => {
-                const p = document.createElement('p');
-                p.textContent = prompt;
-                const button = document.createElement('button');
-                button.textContent = 'Use this';
-                button.onclick = () => getAIResponse(prompt);
-                p.appendChild(button);
-                promptsContainer.appendChild(p);
-            });
-        }
+        const data = await res.json();
+        const prompts = data.prompts;
 
-        async function getAIResponse(prompt) {
-            const responseBox = document.getElementById('ai-response');
-            responseBox.innerHTML = "Thinking...";
-            const res = await fetch('https://visualai-hmg0hmaghrd6abgy.westeurope-01.azurewebsites.net/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    messages: [{ role: "user", content: prompt }],
-                    temperature: 0.7,
-                    max_tokens: 500
-                })
-            });
-            const data = await res.json();
-            responseBox.innerHTML = `<strong>AI Response:</strong><p>${data.choices[0].message.content}</p>`;
-        }
-    </script>
+        prompts.forEach(prompt => {
+            const p = document.createElement('p');
+            p.textContent = prompt;
+            const button = document.createElement('button');
+            button.textContent = 'Use this';
+            button.onclick = () => getAIResponse(prompt);
+            p.appendChild(button);
+            promptsContainer.appendChild(p);
+        });
+    }
+
+    async function getAIResponse(prompt) {
+        const responseBox = document.getElementById('ai-response');
+        responseBox.innerHTML = "Thinking...";
+        const res = await fetch('https://visualai-hmg0hmaghrd6abgy.westeurope-01.azurewebsites.net/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.7,
+                max_tokens: 500
+            })
+        });
+        const data = await res.json();
+        responseBox.innerHTML = `<strong>AI Response:</strong><p>${data.choices[0].message.content}</p>`;
+    }
+</script>
+
 </body>
 </html>
 
