@@ -14,10 +14,15 @@ const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY;
 const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT;
 const AZURE_OPENAI_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT;
 
-// ✅ New route for dynamic prompt generation
+// ✅ Route for dynamic prompt generation with logging
 app.post('/api/generate-prompts', async (req, res) => {
   const { question, alignment } = req.body;
   const creativity = alignment < 34 ? "very creative" : alignment < 67 ? "balanced" : "literal";
+
+  console.log("🔍 Incoming request to /api/generate-prompts");
+  console.log("Question:", question);
+  console.log("Alignment:", alignment);
+  console.log("Creativity level:", creativity);
 
   try {
     const response = await axios.post(
@@ -44,15 +49,18 @@ app.post('/api/generate-prompts', async (req, res) => {
       }
     );
 
+    console.log("✅ OpenAI response received:", response.data);
+
     const raw = response.data.choices[0].message.content;
     const prompts = raw.split('\n').filter(line => line.trim()).slice(0, 3);
     res.json({ prompts });
   } catch (error) {
+    console.error("❌ Error generating prompts:", error.response?.data || error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Existing chat completion route
+// ✅ Route for chat completion
 app.post('/api/chat', async (req, res) => {
   try {
     const response = await axios.post(
@@ -67,9 +75,11 @@ app.post('/api/chat', async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
+    console.error("❌ Error in /api/chat:", error.response?.data || error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
+// ✅ Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
